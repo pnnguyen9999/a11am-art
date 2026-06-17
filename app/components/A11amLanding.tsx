@@ -477,10 +477,10 @@ export default function A11amLanding() {
             We keep the room unstable enough for new signatures to surface.
           </h2>
           <p>
-            a11am develops young art talent through image research, live briefs,
-            portfolio direction, motion experiments, and public-facing releases.
-            The work sits between gallery instinct, internet velocity, and
-            cinematic pressure.
+            A11:am develops young art talent through image research, live
+            briefs, portfolio direction, motion experiments, and public-facing
+            releases. The work sits between gallery instinct, internet velocity,
+            and cinematic pressure.
           </p>
         </div>
       </section>
