@@ -253,12 +253,12 @@ export default function A11amLanding() {
             // fragments += shard(glitchUv, vec2(0.72, -0.5), 0.46, vec2(0.34, 0.016), -uTime * 0.5);
             // fragments += shard(glitchUv, vec2(-0.48, -0.72), 0.08, vec2(0.5, 0.01), uTime * 0.32);
 
-            float hairline = smoothstep(0.965, 1.0, noise(glitchUv * vec2(42.0, 8.0) + uTime * 0.7));
+            float hairline = smoothstep(0.65, 1.0, noise(glitchUv * vec2(42.0, 8.0) + uTime * 0.7));
             hairline *= smoothstep(0.06, 0.0, abs(sin(glitchUv.y * 34.0 + uTime)));
             float bands = 0.0;
-            bands += glitchBand(glitchUv, 0.58 + sin(uTime * 0.1) * 0.08, 0.055, uTime * 0.9);
-            bands += glitchBand(glitchUv, -0.18 + cos(uTime * 0.2) * 0.1, 0.04, -uTime * 0.75);
-            bands += glitchBand(glitchUv, -0.68, 0.03, uTime * 0.3);
+            // bands += glitchBand(glitchUv, 0.58 + sin(uTime * 0.1) * 0.08, 0.055, uTime * 0.9);
+            // bands += glitchBand(glitchUv, -0.18 + cos(uTime * 0.2) * 0.1, 0.04, -uTime * 0.75);
+            // bands += glitchBand(glitchUv, -0.68, 0.03, uTime * 0.3);
             float flashCut = step(0.78, noise(vec2(floor(uTime * 5.0), floor(uv.y * 6.0))));
             float scan = clamp(fragments * 0.86 + hairline * 0.38 + bands * (0.5 + uFlash) + flashCut * uFlash * 0.45, 0.0, 1.0);
             float mask = smoothstep(1.35, 0.08, dist);
@@ -445,7 +445,7 @@ export default function A11amLanding() {
 
       <section id="top" className="hero-section" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="eyebrow gsap-reveal">after 11 am / talent incubator</p>
+          {/* <p className="eyebrow gsap-reveal">rising</p> */}
           <h1 id="hero-title" className="hero-mark gsap-reveal">
             A11:am
           </h1>
