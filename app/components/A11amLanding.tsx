@@ -521,7 +521,7 @@ export default function A11amLanding() {
             <span className="text-highlight">studio@a11am.art</span>
           </a>
           <span className="site-credit">
-            designed by{" "}
+            by{" "}
             <a
               href="https://www.instagram.com/0x49ms/"
               target="_blank"
