@@ -466,9 +466,13 @@ export default function A11amLanding() {
         className="manifesto-section"
         aria-labelledby="incubator-title"
       >
-        <div className="section-index">after eleven:am</div>
+        <div className="section-index">
+          <span className="text-highlight">after eleven:am</span>
+        </div>
         <div className="manifesto-copy">
-          <p className="eyebrow">incubation language</p>
+          <p className="eyebrow">
+            <span className="text-highlight">incubation language</span>
+          </p>
           <h2 id="incubator-title">
             We keep the room unstable enough for new signatures to surface.
           </h2>
@@ -487,16 +491,22 @@ export default function A11amLanding() {
         aria-labelledby="talents-title"
       >
         <div className="talents-heading">
-          <p className="eyebrow">current orbit</p>
+          <p className="eyebrow">
+            <span className="text-highlight">current orbit</span>
+          </p>
           <h2 id="talents-title">Talents</h2>
         </div>
         <div className="talent-grid">
           {TALENTS.map((talent) => (
             <article className="talent-panel" key={talent.name}>
-              <span className="talent-index">{talent.index}</span>
+              <span className="talent-index">
+                <span className="text-highlight">{talent.index}</span>
+              </span>
               <div>
                 <h3>{talent.name}</h3>
-                <p className="talent-role">{talent.role}</p>
+                <p className="talent-role">
+                  <span className="text-highlight">{talent.role}</span>
+                </p>
                 <p className="talent-statement">{talent.statement}</p>
               </div>
             </article>
@@ -506,7 +516,21 @@ export default function A11amLanding() {
 
       <section className="closing-section" aria-label="Closing statement">
         <p className="">after 11:am, the sound gets stranger.</p>
-        <a href="mailto:studio@a11am.art">studio@a11am.art</a>
+        <div className="closing-meta">
+          <a className="closing-email" href="mailto:studio@a11am.art">
+            <span className="text-highlight">studio@a11am.art</span>
+          </a>
+          <span className="site-credit">
+            designed by{" "}
+            <a
+              href="https://www.instagram.com/0x49ms/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              0x49ms
+            </a>
+          </span>
+        </div>
       </section>
     </main>
   );

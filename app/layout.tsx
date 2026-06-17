@@ -1,21 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Mozilla_Text } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const mozillaText = Mozilla_Text({
+  variable: "--font-mozilla-text",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "variable",
 });
 
 export const metadata: Metadata = {
   applicationName: "a11am",
   title: {
-    default: "a11am | After 11 AM Art Talent Incubator",
+    default: "A11:am",
     template: "%s | a11am",
   },
   description:
@@ -62,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={mozillaText.variable}>
       <body>{children}</body>
     </html>
   );
