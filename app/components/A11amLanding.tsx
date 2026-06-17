@@ -11,6 +11,7 @@ const TALENTS = [
   {
     name: "NaSofia",
     role: "Visual poet / image director",
+    img: "/img/na-s.jpg",
     statement:
       "Builds fragile, high-contrast worlds where beauty feels half remembered and half intercepted.",
     index: "01",
@@ -18,6 +19,7 @@ const TALENTS = [
   {
     name: "Toanlelet",
     role: "Motion artist / spatial storyteller",
+    img: "/img/toanlelet.jpg",
     statement:
       "Turns rhythm, glitches, and negative space into frames that keep moving after the cut.",
     index: "02",
@@ -56,10 +58,12 @@ export default function A11amLanding() {
             scrub: 0.7,
             onUpdate: (self) => {
               scrollProgressRef.current = self.progress;
-              const pulse = Math.max(
+              const flashPulse = Math.max(
                 0,
                 Math.sin(self.progress * Math.PI * 9) - 0.38,
               );
+              const burst = Math.pow(self.progress, 1.8) * 0.42;
+              const pulse = Math.min(1, flashPulse + burst);
               flashRef.current = pulse;
               root.style.setProperty("--scroll-progress", `${self.progress}`);
               root.style.setProperty("--flash", `${pulse}`);
@@ -79,7 +83,7 @@ export default function A11amLanding() {
         .to(
           ".canvas-shell",
           {
-            filter: "contrast(1.7) invert(0.82) saturate(1.55)",
+            filter: "contrast(1.9) invert(0.08) saturate(2) brightness(1.12)",
             ease: "none",
           },
           0.18,
@@ -168,12 +172,14 @@ export default function A11amLanding() {
           void main() {
             vUv = uv;
             vec3 pos = position;
-            float ripple = sin((pos.x * 8.4) + (uTime * 0.72)) * 0.25;
-            ripple += cos((pos.y * 20.3) - (uTime * 0.55)) * 0.16;
-            pos.z += ripple * (0.8 + uScroll * 1.8);
-            pos.x += sin(pos.y * 1.5 + uTime) * 0.12 * uScroll;
+            float ripple = sin((pos.x * 1.1) + (uTime * 0.24)) * 0.16;
+            // pos.y * 1.3 để mượt hơn
+            ripple += cos((pos.y * 1.3) - (uTime * 0.42)) * 0.18;
+            pos.z += ripple * (0.8 + uScroll * 3.6);
+            pos.x += sin(pos.y * 1.7 + uTime * 0.8) * (0.08 + uScroll * 0.32);
+            pos.y += cos(pos.x * 1.9 - uTime * 0.6) * uScroll * 0.22;
             vWave = ripple;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 0.9);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
           }
         `,
         fragmentShader: `
@@ -185,30 +191,72 @@ export default function A11amLanding() {
           varying vec2 vUv;
           varying float vWave;
 
-          float lines(vec2 uv, float scale, float drift) {
-            float value = atan((uv.x * scale) + drift) + cos((uv.y * (scale * 0.72)) - drift);
-            return smoothstep(0.06, 0.0, abs(value));
+          mat2 rotate2d(float angle) {
+            float s = sin(angle);
+            float c = cos(angle);
+            return mat2(c, -s, s, c);
+          }
+
+          float hash(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+          }
+
+          float noise(vec2 p) {
+            vec2 i = floor(p);
+            vec2 f = fract(p);
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(
+              mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+              mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x),
+              u.y
+            );
+          }
+
+          float beam(vec2 uv, float angle, float offset, float width, float drift) {
+            vec2 p = rotate2d(angle) * uv;
+            float bend = sin(p.y * 2.1 + drift) * 0.2;
+            bend += sin(p.y * 5.0 - drift * 0.7) * 0.06;
+            float core = smoothstep(width, 0.0, abs(p.x + bend + offset));
+            float fade = smoothstep(1.45, -0.1, abs(p.y));
+            return core * fade;
           }
 
           void main() {
             vec2 uv = vUv * 2.0 - 1.0;
             uv.x *= 1.65;
             float dist = length(uv - vec2(uPointer.x * 0.24, uPointer.y * 0.18));
-            float scan = lines(uv + vWave * 0.18, 18.0 + uScroll * 32.0, uTime * 1.6);
+            float burst = 0.55 + smoothstep(0.14, 0.78, uScroll) * (0.45 + uFlash * 1.45);
+            vec2 flow = uv;
+            flow.x += sin(flow.y * 2.6 + uTime * 0.38 + vWave) * (0.18 + burst * 0.18);
+            flow.y += cos(flow.x * 1.8 - uTime * 0.32) * (0.1 + burst * 0.22);
+
+            float rays = 0.0;
+            rays += beam(flow, -0.62, -0.5, 0.05, uTime * 0.85);
+            rays += beam(flow, -0.42, 0.1, 0.035, -uTime * 0.7);
+            rays += beam(flow, -0.88, 0.48, 0.028, uTime * 1.1);
+            rays += beam(flow, 0.18, -0.14, 0.022, uTime * 0.55);
+
+            float angle = atan(uv.y, uv.x);
+            float radius = length(uv);
+            // số lượng nhánh
+            float fracture = sin(angle * 16.0 + uTime * 2.2 + noise(uv * 3.0 + uTime) * 2.8);
+            float explosion = smoothstep(0.18, 0.0, abs(fracture)) * smoothstep(1.2, 0.08, radius) * burst;
+            float sparks = smoothstep(0.93, 1.0, noise(uv * (18.0 + uScroll * 18.0) + uTime * 1.4)) * burst;
+            float scan = clamp(rays * 0.75 + explosion * 1.15 + sparks * 0.75, 0.0, 1.0);
             float mask = smoothstep(1.35, 0.08, dist);
-            float cut = step(0.52 + sin(uTime * 7.0) * 0.08, scan + mask * 0.35);
+            float cut = smoothstep(0.18, 0.86, scan + mask * 0.16 + uFlash * 0.18);
 
             vec3 ink = vec3(0.08, 0.015, 0.0);
             vec3 cold = vec3(1.0, 0.42, 0.0);
             vec3 acid = vec3(1.0, 0.74, 0.08);
             vec3 hot = vec3(1.0, 0.16, 0.0);
             vec3 color = mix(cold, acid, smoothstep(-0.2, 0.9, uv.y + uScroll));
-            color = mix(color, hot, smoothstep(0.55, 0.0, abs(uv.x + sin(uTime) * 0.25)));
+            color = mix(color, hot, smoothstep(0.74, 0.0, abs(uv.x + sin(uTime) * 0.25)) + explosion * 0.45);
             color = mix(ink, color, cut);
-            color = mix(color, 1.0 - color, clamp(uFlash * 1.35 + uScroll * 0.2, 0.0, 1.0));
-            color += vec3(mask * 0.14);
+            color = mix(color, 1.0 - color, clamp(uFlash * 0.95 + burst * 0.28, 0.0, 1.0));
+            color += vec3(mask * 0.1 + sparks * 0.18);
 
-            float alpha = 0.34 + cut * 0.38 + uFlash * 0.22;
+            float alpha = 0.18 + cut * 0.52 + burst * 0.18 + sparks * 0.16;
             gl_FragColor = vec4(color, alpha);
           }
         `,

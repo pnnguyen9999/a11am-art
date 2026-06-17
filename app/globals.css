@@ -163,9 +163,10 @@ a {
 }
 
 .hero-mark {
-  color: var(--foreground);
-  font-size: clamp(5.1rem, 18vw, 23rem);
-  font-weight: 850;
+  color: rgba(255, 255, 255, 0.9);
+  mix-blend-mode: difference;
+  font-size: clamp(5.1rem, 16vw, 23rem);
+  font-weight: 950;
   letter-spacing: 0;
   line-height: 0.76;
   margin: 0;
@@ -285,7 +286,7 @@ a {
 
 .talent-panel h3 {
   color: var(--foreground);
-  font-size: clamp(2.3rem, 7vw, 8rem);
+  font-size: clamp(2.3rem, 6vw, 8rem);
   font-weight: 950;
   line-height: 0.84;
   margin: 0 0 1rem;
