@@ -60,10 +60,12 @@ export default function A11amLanding() {
               scrollProgressRef.current = self.progress;
               const flashPulse = Math.max(
                 0,
-                Math.sin(self.progress * Math.PI * 9) - 0.38,
+                Math.sin(self.progress * Math.PI * 13) - 0.42,
               );
-              const burst = Math.pow(self.progress, 1.8) * 0.42;
-              const pulse = Math.min(1, flashPulse + burst);
+              const glitchBeat =
+                Math.sin(self.progress * Math.PI * 41) > 0.82 ? 0.22 : 0;
+              const burst = Math.pow(self.progress, 1.65) * 0.36;
+              const pulse = Math.min(1, flashPulse + burst + glitchBeat);
               flashRef.current = pulse;
               root.style.setProperty("--scroll-progress", `${self.progress}`);
               root.style.setProperty("--flash", `${pulse}`);
@@ -174,7 +176,7 @@ export default function A11amLanding() {
             vec3 pos = position;
             float ripple = sin((pos.x * 1.1) + (uTime * 0.24)) * 0.16;
             // pos.y * 1.3 để mượt hơn
-            ripple += cos((pos.y * 1.3) - (uTime * 0.42)) * 0.18;
+            ripple += cos((pos.y * 0.1) - (uTime * 0.42)) * 0.18;
             pos.z += ripple * (0.8 + uScroll * 3.6);
             pos.x += sin(pos.y * 1.7 + uTime * 0.8) * (0.08 + uScroll * 0.32);
             pos.y += cos(pos.x * 1.9 - uTime * 0.6) * uScroll * 0.22;
@@ -212,51 +214,68 @@ export default function A11amLanding() {
             );
           }
 
-          float beam(vec2 uv, float angle, float offset, float width, float drift) {
-            vec2 p = rotate2d(angle) * uv;
-            float bend = sin(p.y * 2.1 + drift) * 0.2;
-            bend += sin(p.y * 5.0 - drift * 0.7) * 0.06;
-            float core = smoothstep(width, 0.0, abs(p.x + bend + offset));
-            float fade = smoothstep(1.45, -0.1, abs(p.y));
-            return core * fade;
+          float boxMask(vec2 p, vec2 size) {
+            vec2 d = abs(p) - size;
+            return 1.0 - smoothstep(0.0, 0.018, max(d.x, d.y));
+          }
+
+          float shard(vec2 uv, vec2 center, float angle, vec2 size, float jag) {
+            vec2 p = rotate2d(angle) * (uv - center);
+            p.x += sin(p.y * 18.0 + jag) * 0.95;
+            p.y += noise(p * 18.0 + jag) * 0.55;
+            float body = boxMask(p, size);
+            float chip = smoothstep(0.38, 1.0, noise(p * 35.0 + jag));
+            return body * (0.5 + chip * 0.6);
+          }
+
+          float glitchBand(vec2 uv, float y, float height, float drift) {
+            float band = smoothstep(height, 0.0, abs(uv.y - y));
+            float tear = smoothstep(0.55, 1.0, noise(vec2(uv.y * 20.0, drift)));
+            return band * tear;
           }
 
           void main() {
             vec2 uv = vUv * 2.0 - 1.0;
             uv.x *= 1.65;
             float dist = length(uv - vec2(uPointer.x * 0.24, uPointer.y * 0.18));
-            float burst = 0.55 + smoothstep(0.14, 0.78, uScroll) * (0.45 + uFlash * 1.45);
-            vec2 flow = uv;
-            flow.x += sin(flow.y * 2.6 + uTime * 0.38 + vWave) * (0.18 + burst * 0.18);
-            flow.y += cos(flow.x * 1.8 - uTime * 0.32) * (0.1 + burst * 0.22);
+            float burst = 0.35 + smoothstep(0.08, 0.9, uScroll) * (0.34 + uFlash * 1.25);
+            float blockShift = floor(noise(vec2(floor(uv.y * 18.0), floor(uTime * 8.0))) * 3.0) - 1.0;
+            vec2 glitchUv = uv;
+            glitchUv.x += blockShift * (0.018 + uFlash * 0.075);
+            glitchUv.x += sin(uv.y * 38.0 + uTime * 1.0) * (0.004 + uFlash * 0.016);
+            glitchUv.y += vWave * 0.08;
 
-            float rays = 0.0;
-            rays += beam(flow, -0.62, -0.5, 0.05, uTime * 0.85);
-            rays += beam(flow, -0.42, 0.1, 0.035, -uTime * 0.7);
-            rays += beam(flow, -0.88, 0.48, 0.028, uTime * 1.1);
-            rays += beam(flow, 0.18, -0.14, 0.022, uTime * 0.55);
+            float fragments = 0.0;
+            fragments += shard(glitchUv, vec2(-0.58, 0.42), -0.5, vec2(0.42, 0.118), uTime * 0.42);
+            // fragments += shard(glitchUv, vec2(0.38, 0.26), 0.18, vec2(0.56, 0.014), -uTime * 0.36);
+            // fragments += shard(glitchUv, vec2(-0.08, -0.08), -0.12, vec2(0.72, 0.012), uTime * 0.28);
+            // fragments += shard(glitchUv, vec2(0.72, -0.5), 0.46, vec2(0.34, 0.016), -uTime * 0.5);
+            // fragments += shard(glitchUv, vec2(-0.48, -0.72), 0.08, vec2(0.5, 0.01), uTime * 0.32);
 
-            float angle = atan(uv.y, uv.x);
-            float radius = length(uv);
-            // số lượng nhánh
-            float fracture = sin(angle * 16.0 + uTime * 2.2 + noise(uv * 3.0 + uTime) * 2.8);
-            float explosion = smoothstep(0.18, 0.0, abs(fracture)) * smoothstep(1.2, 0.08, radius) * burst;
-            float sparks = smoothstep(0.93, 1.0, noise(uv * (18.0 + uScroll * 18.0) + uTime * 1.4)) * burst;
-            float scan = clamp(rays * 0.75 + explosion * 1.15 + sparks * 0.75, 0.0, 1.0);
+            float hairline = smoothstep(0.965, 1.0, noise(glitchUv * vec2(42.0, 8.0) + uTime * 0.7));
+            hairline *= smoothstep(0.06, 0.0, abs(sin(glitchUv.y * 34.0 + uTime)));
+            float bands = 0.0;
+            bands += glitchBand(glitchUv, 0.58 + sin(uTime * 0.1) * 0.08, 0.055, uTime * 0.9);
+            bands += glitchBand(glitchUv, -0.18 + cos(uTime * 0.2) * 0.1, 0.04, -uTime * 0.75);
+            bands += glitchBand(glitchUv, -0.68, 0.03, uTime * 0.3);
+            float flashCut = step(0.78, noise(vec2(floor(uTime * 5.0), floor(uv.y * 6.0))));
+            float scan = clamp(fragments * 0.86 + hairline * 0.38 + bands * (0.5 + uFlash) + flashCut * uFlash * 0.45, 0.0, 1.0);
             float mask = smoothstep(1.35, 0.08, dist);
-            float cut = smoothstep(0.18, 0.86, scan + mask * 0.16 + uFlash * 0.18);
+            float cut = smoothstep(0.12, 0.82, scan + mask * 0.08 + uFlash * 0.2);
 
             vec3 ink = vec3(0.08, 0.015, 0.0);
             vec3 cold = vec3(1.0, 0.42, 0.0);
             vec3 acid = vec3(1.0, 0.74, 0.08);
             vec3 hot = vec3(1.0, 0.16, 0.0);
-            vec3 color = mix(cold, acid, smoothstep(-0.2, 0.9, uv.y + uScroll));
-            color = mix(color, hot, smoothstep(0.74, 0.0, abs(uv.x + sin(uTime) * 0.25)) + explosion * 0.45);
+            vec3 color = mix(cold, acid, smoothstep(-0.2, 0.9, glitchUv.y + uScroll));
+            color = mix(color, hot, smoothstep(0.7, 0.0, abs(glitchUv.x + sin(uTime * 0.7) * 0.18)) + bands * 0.38);
             color = mix(ink, color, cut);
-            color = mix(color, 1.0 - color, clamp(uFlash * 0.95 + burst * 0.28, 0.0, 1.0));
-            color += vec3(mask * 0.1 + sparks * 0.18);
+            color.r += scan * uFlash * 0.28;
+            color.g -= bands * uFlash * 0.12;
+            color = mix(color, 1.0 - color, clamp(uFlash * 0.8 + flashCut * 0.35, 0.0, 1.0));
+            color += vec3(mask * 0.06 + hairline * 0.1);
 
-            float alpha = 0.18 + cut * 0.52 + burst * 0.18 + sparks * 0.16;
+            float alpha = 0.14 + cut * 0.5 + burst * 0.12 + bands * 0.18 + hairline * 0.08;
             gl_FragColor = vec4(color, alpha);
           }
         `,

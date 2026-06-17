@@ -319,7 +319,7 @@ a {
 }
 
 .closing-section p {
-  color: black;
+  color: white;
   font-size: clamp(2.4rem, 9vw, 9rem);
   font-weight: 920;
   line-height: 0.9;
