@@ -76,6 +76,7 @@ export default function A11amLanding() {
           ".hero-mark",
           {
             scale: 0.86,
+            x: 299,
             letterSpacing: "0.08em",
             opacity: 0.24,
             ease: "none",
@@ -434,7 +435,7 @@ export default function A11amLanding() {
 
       <nav className="site-nav" aria-label="Primary">
         <a href="#top" className="nav-logo">
-          a11am
+          A11:am
         </a>
         <div className="nav-links">
           <a href="#incubator">incubator</a>
@@ -446,7 +447,7 @@ export default function A11amLanding() {
         <div className="hero-copy">
           <p className="eyebrow gsap-reveal">after 11 am / talent incubator</p>
           <h1 id="hero-title" className="hero-mark gsap-reveal">
-            A11Am
+            A11:am
           </h1>
           <p className="hero-text gsap-reveal">
             A post-noon art talent incubator for image-makers, performers, and
@@ -465,7 +466,7 @@ export default function A11amLanding() {
         className="manifesto-section"
         aria-labelledby="incubator-title"
       >
-        <div className="section-index">after 11 am</div>
+        <div className="section-index">after eleven:am</div>
         <div className="manifesto-copy">
           <p className="eyebrow">incubation language</p>
           <h2 id="incubator-title">
@@ -504,7 +505,7 @@ export default function A11amLanding() {
       </section>
 
       <section className="closing-section" aria-label="Closing statement">
-        <p className="">after 11 am, the light gets stranger.</p>
+        <p className="">after 11:am, the sound gets stranger.</p>
         <a href="mailto:studio@a11am.art">studio@a11am.art</a>
       </section>
     </main>
