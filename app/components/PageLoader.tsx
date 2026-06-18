@@ -6,10 +6,10 @@ type PageLoaderProps = {
   ready: boolean;
 };
 
-const HOURS = [5, 6, 7, 8, 9, 10, 11] as const;
-const MIN_VISIBLE_MS = 2500;
+const HOURS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
+const MIN_VISIBLE_MS = 1600;
 const HOLD_AT_DONE_MS = 1500;
-const EXIT_MS = 700;
+const EXIT_MS = 520;
 const STEP_MS = MIN_VISIBLE_MS / (HOURS.length - 1);
 
 export default function PageLoader({ ready }: PageLoaderProps) {
@@ -57,13 +57,25 @@ export default function PageLoader({ ready }: PageLoaderProps) {
     return null;
   }
 
+  const loaderText = `after ${hour}:am`;
+
   return (
     <div
-      className={`page-loader${phase === "leaving" ? " is-leaving" : ""}`}
+      className={[
+        "page-loader",
+        hour >= 8 ? "is-text-glitching" : "",
+        phase === "leaving" ? "is-leaving" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
       aria-hidden={phase === "leaving"}
     >
       <div className="page-loader__inner">
-        <div className="page-loader__time" aria-live="polite">
+        <div
+          className="page-loader__time"
+          data-text={loaderText}
+          aria-live="polite"
+        >
           <span className="page-loader__label">after</span>
           <span key={hour} className="page-loader__hour">
             {hour}
