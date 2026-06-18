@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
+import PageLoader from "./PageLoader";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +33,55 @@ export default function A11amLanding() {
   const scrollProgressRef = useRef(0);
   const flashRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
+  const readyPartsRef = useRef(new Set<string>());
+  const [isPageReady, setIsPageReady] = useState(false);
+
+  const markReady = useCallback((part: "window" | "fonts" | "frame") => {
+    readyPartsRef.current.add(part);
+    if (
+      readyPartsRef.current.has("window") &&
+      readyPartsRef.current.has("fonts") &&
+      readyPartsRef.current.has("frame")
+    ) {
+      setIsPageReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const complete = (part: "window" | "fonts") => {
+      if (!cancelled) {
+        markReady(part);
+      }
+    };
+    const onWindowLoad = () => complete("window");
+
+    if (document.readyState === "complete") {
+      complete("window");
+    } else {
+      window.addEventListener("load", onWindowLoad, { once: true });
+    }
+
+    if ("fonts" in document) {
+      document.fonts.ready.then(
+        () => complete("fonts"),
+        () => complete("fonts"),
+      );
+    } else {
+      complete("fonts");
+    }
+
+    const fallbackTimer = window.setTimeout(() => {
+      complete("window");
+      complete("fonts");
+    }, 2800);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("load", onWindowLoad);
+      window.clearTimeout(fallbackTimer);
+    };
+  }, [markReady]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -357,6 +407,7 @@ export default function A11amLanding() {
 
     const clock = new THREE.Clock();
     let animationFrame = 0;
+    let hasRenderedFirstFrame = false;
 
     const resize = () => {
       const width = host.clientWidth || window.innerWidth;
@@ -394,6 +445,10 @@ export default function A11amLanding() {
       camera.lookAt(0, 0, 0);
 
       renderer.render(scene, camera);
+      if (!hasRenderedFirstFrame) {
+        hasRenderedFirstFrame = true;
+        markReady("frame");
+      }
       animationFrame = window.requestAnimationFrame(animate);
     };
 
@@ -406,6 +461,7 @@ export default function A11amLanding() {
       uniforms.uScroll.value = 0.18;
       ringGroup.rotation.z = 0.9;
       renderer.render(scene, camera);
+      markReady("frame");
     } else {
       animate();
     }
@@ -426,10 +482,16 @@ export default function A11amLanding() {
       particleMaterial.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [markReady]);
 
   return (
-    <main ref={rootRef} className="a11am-page">
+    <main
+      ref={rootRef}
+      className="a11am-page"
+      aria-busy={!isPageReady}
+      data-ready={isPageReady}
+    >
+      <PageLoader ready={isPageReady} />
       <div ref={canvasHostRef} className="canvas-shell" aria-hidden="true" />
       <div className="flash-layer" aria-hidden="true" />
 
