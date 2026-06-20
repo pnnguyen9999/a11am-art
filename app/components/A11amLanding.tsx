@@ -512,14 +512,15 @@ export default function A11amLanding() {
             after 11:am
           </h1>
           <p className="hero-text gsap-reveal">
-            A post-noon art talent incubator for image-makers, performers, and
-            motion authors shaping intimate worlds with sharp contrast.
+            An independent art studio and talent incubator for emerging artists,
+            musicians, and visual creators, curating online exhibitions and
+            turning raw ideas into meaningful public work.
           </p>
         </div>
         <div className="hero-meta gsap-reveal" aria-label="Studio notes">
-          <span>art direction</span>
-          <span>moving image</span>
-          <span>talent systems</span>
+          <span>artist incubation</span>
+          <span>digital exhibitions</span>
+          <span>creative identity</span>
         </div>
       </section>
 
@@ -533,16 +534,16 @@ export default function A11amLanding() {
         </div>
         <div className="manifesto-copy">
           <p className="eyebrow">
-            <span className="text-highlight">incubation language</span>
+            <span className="text-highlight">artist incubation</span>
           </p>
           <h2 id="incubator-title">
-            We keep the room unstable enough for new signatures to surface.
+            We create space for emerging artists to shape their first real
+            signal.
           </h2>
           <p>
-            A11:am develops young art talent through image research, live
-            briefs, portfolio direction, motion experiments, and public-facing
-            releases. The work sits between gallery instinct, internet velocity,
-            and cinematic pressure.
+            A11:am supports young creative talent through concept development,
+            portfolio direction, online exhibitions, and public-facing releases.
+            The work sits between art, sound, image, and internet culture.
           </p>
         </div>
       </section>
