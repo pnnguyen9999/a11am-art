@@ -509,7 +509,7 @@ export default function A11amLanding() {
         <div className="hero-copy">
           {/* <p className="eyebrow gsap-reveal">rising</p> */}
           <h1 id="hero-title" className="hero-mark gsap-reveal">
-            A11:am
+            after 11:am
           </h1>
           <p className="hero-text gsap-reveal">
             A post-noon art talent incubator for image-makers, performers, and

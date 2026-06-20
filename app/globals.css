@@ -407,7 +407,7 @@ a {
 .hero-mark {
   color: rgba(255, 255, 255, 0.9);
   mix-blend-mode: difference;
-  font-size: clamp(5.1rem, 16vw, 23rem);
+  font-size: clamp(5.1rem, 10vw, 23rem);
   font-weight: 950;
   letter-spacing: 0;
   line-height: 0.76;
