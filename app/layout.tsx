@@ -58,8 +58,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={mozillaText.variable}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${mozillaText.variable} scroll-smooth bg-[#050505] motion-reduce:scroll-auto`}
+    >
+      <body className="m-0 min-h-screen overflow-x-hidden bg-[#050505] font-sans text-[#f5f1e8] selection:bg-[#cc3300] selection:text-[#050505] motion-reduce:[&_*]:!animate-none motion-reduce:[&_*]:!transition-none">
+        {children}
+      </body>
     </html>
   );
 }

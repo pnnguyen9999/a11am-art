@@ -90,8 +90,8 @@ export default function A11amLanding() {
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(".gsap-reveal", { autoAlpha: 0, y: 38 });
-      gsap.to(".gsap-reveal", {
+      gsap.set("[data-gsap-reveal]", { autoAlpha: 0, y: 38 });
+      gsap.to("[data-gsap-reveal]", {
         autoAlpha: 1,
         y: 0,
         duration: 1.15,
@@ -123,7 +123,7 @@ export default function A11amLanding() {
           },
         })
         .to(
-          ".hero-mark",
+          "[data-hero-mark]",
           {
             scale: 0.86,
             x: 299,
@@ -134,7 +134,7 @@ export default function A11amLanding() {
           0,
         )
         .to(
-          ".canvas-shell",
+          "[data-canvas-shell]",
           {
             filter: "contrast(1.9) invert(0.08) saturate(2) brightness(1.12)",
             ease: "none",
@@ -142,7 +142,7 @@ export default function A11amLanding() {
           0.18,
         )
         .to(
-          ".talent-panel",
+          "[data-talent-panel]",
           {
             yPercent: -8,
             ease: "none",
@@ -151,7 +151,50 @@ export default function A11amLanding() {
           0.45,
         );
 
-      ScrollTrigger.batch(".talent-panel", {
+      const incubatorSection = root.querySelector<HTMLElement>(
+        "[data-incubator-section]",
+      );
+      const incubatorWords = Array.from(
+        root.querySelectorAll<HTMLElement>("[data-incubator-word]"),
+      );
+
+      if (incubatorSection && incubatorWords.length > 0) {
+        gsap.set(incubatorWords, {
+          autoAlpha: 0,
+          y: 22,
+          filter: "blur(8px)",
+        });
+
+        gsap
+          .timeline({
+            defaults: {
+              ease: "power2.out",
+            },
+            scrollTrigger: {
+              trigger: incubatorSection,
+              start: "top top",
+              end: () =>
+                `+=${Math.max(window.innerHeight * 1.25, incubatorWords.length * 170)}`,
+              scrub: 0.65,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          })
+          .to(
+            incubatorWords,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: "blur(0px)",
+              duration: 0.7,
+              stagger: 0.18,
+            },
+            0,
+          );
+      }
+
+      ScrollTrigger.batch("[data-talent-panel]", {
         start: "top 78%",
         onEnter: (items) => {
           gsap.to(items, {
@@ -487,37 +530,63 @@ export default function A11amLanding() {
   return (
     <main
       ref={rootRef}
-      className="a11am-page"
+      className="relative isolate min-h-[430vh] overflow-clip [--flash:0] [--scroll-progress:0] md:min-h-[420vh]"
       aria-busy={!isPageReady}
       data-ready={isPageReady}
     >
       <PageLoader ready={isPageReady} />
-      <div ref={canvasHostRef} className="canvas-shell" aria-hidden="true" />
-      <div className="flash-layer" aria-hidden="true" />
+      <div
+        ref={canvasHostRef}
+        className="fixed inset-0 z-[-3] [transform:translateZ(0)] [background:radial-gradient(circle_at_18%_20%,rgba(255,36,92,0.18),transparent_26%),radial-gradient(circle_at_74%_12%,rgba(0,231,255,0.2),transparent_28%),#050505] [filter:contrast(1.1)_invert(0)_saturate(1.25)] transition-[filter] duration-[160ms] ease-linear [&>canvas]:block [&>canvas]:h-full [&>canvas]:w-full"
+        data-canvas-shell
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none fixed inset-0 z-[-1] mix-blend-difference opacity-[calc(0.25+var(--flash)*0.75)] [background:linear-gradient(115deg,rgba(255,255,255,calc(var(--flash)*0.26)),rgba(223,255,31,calc(var(--flash)*0.16))_28%,rgba(255,36,92,calc(var(--flash)*0.18))_54%,rgba(0,0,0,0)),repeating-linear-gradient(0deg,rgba(255,255,255,calc(var(--flash)*0.08))_0_1px,transparent_1px_9px)]"
+        aria-hidden="true"
+      />
 
-      <nav className="site-nav" aria-label="Primary">
-        <a href="#top" className="nav-logo">
+      <nav
+        className="fixed left-0 right-0 top-0 z-[5] flex items-center justify-between px-4 py-[0.9rem] font-mono text-[0.76rem] mix-blend-difference md:p-[clamp(1rem,2.5vw,2rem)]"
+        aria-label="Primary"
+      >
+        <a href="#top" className="font-bold text-white">
           A11:am
         </a>
-        <div className="nav-links">
+        <div className="flex gap-[0.72rem] md:gap-[clamp(0.85rem,2vw,1.7rem)] [&>a]:text-[0.68rem] [&>a]:text-white/70 md:[&>a]:text-[0.76rem]">
           <a href="#incubator">incubator</a>
           <a href="#talents">talents</a>
         </div>
       </nav>
 
-      <section id="top" className="hero-section" aria-labelledby="hero-title">
-        <div className="hero-copy">
-          {/* <p className="eyebrow gsap-reveal">rising</p> */}
-          <h1 id="hero-title" className="hero-mark gsap-reveal">
+      <section
+        id="top"
+        className="relative mx-auto flex min-h-[100svh] max-w-screen 5xl:max-w-[1500px] flex-col justify-end px-[1.1rem] pb-[clamp(3.6rem,8vh,7rem)] pt-28 md:grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.32fr)] md:items-end md:px-[clamp(1.1rem,4vw,4.5rem)]"
+        aria-labelledby="hero-title"
+      >
+        <div className="max-w-[72rem]">
+          <h1
+            id="hero-title"
+            className="m-0 max-w-full text-[clamp(4.6rem,25vw,7.3rem)] font-[950] leading-[0.76] tracking-[0] text-white/90 mix-blend-difference md:text-[clamp(5.1rem,10vw,23rem)]"
+            data-gsap-reveal
+            data-hero-mark
+          >
             after 11:am
           </h1>
-          <p className="hero-text gsap-reveal">
+          <p
+            className="mb-0 mt-[clamp(1.4rem,3vw,2.8rem)] max-w-[45rem] text-[11pt] font-extralight leading-[1.35] text-[rgba(245,241,232,0.82)] md:text-[clamp(1.05rem,1.5vw,1.55rem)]"
+            data-gsap-reveal
+          >
             An independent art studio and talent incubator for emerging artists,
             musicians, and visual creators, curating online exhibitions and
             turning raw ideas into meaningful public work.
           </p>
         </div>
-        <div className="hero-meta gsap-reveal" aria-label="Studio notes">
+        <div
+          className="mt-9 grid w-full grid-cols-1 gap-[0.7rem] border-t border-[rgba(245,241,232,0.26)] pt-4 font-mono text-[0.76rem] text-[rgba(245,241,232,0.78)] md:mt-0 md:w-auto md:self-end md:justify-self-end md:border-l md:border-t-0 md:border-[rgba(245,241,232,0.28)] md:pl-4 md:pt-0"
+          aria-label="Studio notes"
+          data-gsap-reveal
+        >
           <span>artist incubation</span>
           <span>digital exhibitions</span>
           <span>creative identity</span>
@@ -526,64 +595,121 @@ export default function A11amLanding() {
 
       <section
         id="incubator"
-        className="manifesto-section"
+        className="relative mx-auto block min-h-[118svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] py-20 md:grid md:grid-cols-[minmax(8rem,0.4fr)_minmax(0,0.8fr)] md:items-start md:gap-[clamp(2rem,6vw,7rem)] md:px-[clamp(1.1rem,4vw,4.5rem)] md:pt-[24vh]"
         aria-labelledby="incubator-title"
+        data-incubator-section
       >
-        <div className="section-index">
-          <span className="text-highlight">after eleven:am</span>
+        <div>
+          <div className="mb-8 font-mono text-[clamp(1.6rem,5vw,5.8rem)] font-extrabold leading-[1.08] md:mb-0">
+            <span className="inline box-decoration-clone bg-[#cc3300] px-[0.3em] pb-[0.1em] pt-[0.08em] leading-[1.08] text-[#050505]">
+              after eleven:am
+            </span>
+          </div>
+          <div className="max-w-[600px]">
+            <p className="mb-0 mt-8 text-[clamp(1rem,1.7vw,1.35rem)] leading-[1.6] text-[rgba(245,241,232,0.78)]">
+              A11:am supports young creative talent through concept development,
+              portfolio direction, online exhibitions, and public-facing
+              releases. The work sits between art, sound, image, and internet
+              culture.
+            </p>
+          </div>
         </div>
-        <div className="manifesto-copy">
-          <p className="eyebrow">
-            <span className="text-highlight">artist incubation</span>
-          </p>
-          <h2 id="incubator-title">
-            We create space for emerging artists to shape their first real
-            signal.
+        <div className="flex flex-col justify-end items-end mt-10 md:mt-0">
+          <h2
+            id="incubator-title"
+            className="m-0 mt-[-20px] w-full md:text-right text-[clamp(3.25rem,10vw,6.25rem)] font-black leading-[1.2] text-[#f5f1e8] md:text-[84px]"
+          >
+            {[
+              "We",
+              "create",
+              "space",
+              "for",
+              "emerging",
+              "artists",
+              "to",
+              "shape",
+              "their",
+              "first",
+              "real",
+              "signal.",
+            ].map((word) => (
+              <span
+                className="mr-[0.18em] inline-block will-change-[transform,opacity,filter]"
+                data-incubator-word
+                key={word}
+              >
+                {word}
+              </span>
+            ))}
           </h2>
-          <p>
-            A11:am supports young creative talent through concept development,
-            portfolio direction, online exhibitions, and public-facing releases.
-            The work sits between art, sound, image, and internet culture.
-          </p>
         </div>
       </section>
 
       <section
         id="talents"
-        className="talents-section"
+        className="relative mx-auto min-h-[130svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] pb-[16vh] pt-[16vh] md:px-[clamp(1.1rem,4vw,4.5rem)]"
         aria-labelledby="talents-title"
       >
-        <div className="talents-heading">
-          <p className="eyebrow">
-            <span className="text-highlight">current orbit</span>
+        <div className="mb-[clamp(2rem,7vw,6.5rem)] block md:flex md:items-end md:justify-between md:gap-8">
+          <p className="mb-[0.8rem] mt-0 font-mono text-[clamp(0.72rem,1.8vw,0.9rem)] font-bold leading-[1.08]">
+            <span className="inline box-decoration-clone bg-[#cc3300] px-[0.3em] pb-[0.1em] pt-[0.08em] leading-[1.08] text-[#050505]">
+              current orbit
+            </span>
           </p>
-          <h2 id="talents-title">Talents</h2>
+          <h2
+            id="talents-title"
+            className="m-0 max-w-[58rem] text-[clamp(2.25rem,5.5vw,7.5rem)] font-black leading-[0.92] text-[#f5f1e8]"
+          >
+            Talents
+          </h2>
         </div>
-        <div className="talent-grid">
+        <div className="grid grid-cols-1 gap-[clamp(1rem,2vw,1.4rem)] md:grid-cols-2">
           {TALENTS.map((talent) => (
-            <article className="talent-panel" key={talent.name}>
-              <span className="talent-index">
-                <span className="text-highlight">{talent.index}</span>
+            <article
+              className="grid min-h-[26rem] translate-y-[30px] content-between border border-[rgba(245,241,232,0.28)] bg-[linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.04)),rgba(5,5,5,0.44)] p-4 opacity-30 md:min-h-[clamp(22rem,36vw,34rem)] md:p-[clamp(1.1rem,3vw,2.25rem)] md:[&:nth-child(2)]:mt-[clamp(2.2rem,8vw,8rem)]"
+              key={talent.name}
+              data-talent-panel
+            >
+              <span className="font-mono text-[clamp(0.8rem,1vw,0.95rem)] font-extrabold leading-[1.08]">
+                <span className="inline box-decoration-clone bg-[#0033cc] px-[0.3em] pb-[0.1em] pt-[0.08em] leading-[1.08] text-[#050505]">
+                  {talent.index}
+                </span>
               </span>
               <div>
-                <h3>{talent.name}</h3>
-                <p className="talent-role">
-                  <span className="text-highlight">{talent.role}</span>
+                <h3 className="mb-4 mt-0 text-[clamp(2.3rem,6vw,8rem)] font-[950] leading-[0.84] text-[#f5f1e8] [overflow-wrap:anywhere]">
+                  {talent.name}
+                </h3>
+                <p className="mb-4 mt-0 font-mono text-[0.82rem] font-bold leading-[1.08]">
+                  <span className="inline box-decoration-clone bg-[#cc3300] px-[0.3em] pb-[0.1em] pt-[0.08em] leading-[1.08] text-[#050505]">
+                    {talent.role}
+                  </span>
                 </p>
-                <p className="talent-statement">{talent.statement}</p>
+                <p className="m-0 max-w-[31rem] text-[clamp(1rem,1.55vw,1.26rem)] leading-[1.45] text-[rgba(245,241,232,0.78)]">
+                  {talent.statement}
+                </p>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="closing-section" aria-label="Closing statement">
-        <p className="">after 11:am, the sound gets stranger.</p>
-        <div className="closing-meta">
-          <a className="closing-email" href="mailto:studio@a11am.art">
-            <span className="text-highlight">studio@a11am.art</span>
+      <section
+        className="relative mx-auto block min-h-[72svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] pb-8 pt-[15vh] md:flex md:items-end md:justify-between md:px-[clamp(1.1rem,4vw,4.5rem)] md:pb-[clamp(2rem,6vw,5rem)] md:pt-0"
+        aria-label="Closing statement"
+      >
+        <p className="m-0 max-w-[58rem] text-[clamp(2.4rem,9vw,9rem)] font-[920] leading-[0.9] text-white">
+          after 11:am, the sound gets stranger.
+        </p>
+        <div className="mt-8 flex flex-col items-start gap-[0.85rem] md:mb-[0.6rem] md:mt-0 md:items-end">
+          <a
+            className="border-b border-current font-mono text-[0.82rem] leading-[1.08]"
+            href="mailto:studio@a11am.art"
+          >
+            <span className="inline box-decoration-clone bg-[#cc3300] px-[0.3em] pb-[0.1em] pt-[0.08em] leading-[1.08] text-[#050505]">
+              studio@a11am.art
+            </span>
           </a>
-          <span className="site-credit">
+          <span className="font-mono text-[0.68rem] font-medium leading-none text-[rgba(245,241,232,0.46)] [&>a]:border-b [&>a]:border-current [&>a]:text-[rgba(245,241,232,0.68)]">
             by{" "}
             <a
               href="https://www.instagram.com/0x49ms/"

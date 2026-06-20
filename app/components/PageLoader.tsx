@@ -7,8 +7,8 @@ type PageLoaderProps = {
 };
 
 const HOURS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
-const MIN_VISIBLE_MS = 1600;
-const HOLD_AT_DONE_MS = 1500;
+const MIN_VISIBLE_MS = 600;
+const HOLD_AT_DONE_MS = 500;
 const EXIT_MS = 520;
 const STEP_MS = MIN_VISIBLE_MS / (HOURS.length - 1);
 
@@ -58,29 +58,46 @@ export default function PageLoader({ ready }: PageLoaderProps) {
   }
 
   const loaderText = `after ${hour}:am`;
+  const isLeaving = phase === "leaving";
 
   return (
     <div
       className={[
-        "page-loader",
-        hour >= 8 ? "is-text-glitching" : "",
-        phase === "leaving" ? "is-leaving" : "",
+        "fixed inset-0 z-[2147483647] flex h-dvh w-screen items-center justify-center overflow-hidden bg-black [transition:opacity_700ms_ease,visibility_700ms_ease,transform_900ms_cubic-bezier(0.22,1,0.36,1)]",
+        isLeaving
+          ? "pointer-events-none animate-[loader-hard-reveal_520ms_steps(1,end)_forwards] transition-none"
+          : "pointer-events-auto visible",
       ]
         .filter(Boolean)
         .join(" ")}
-      aria-hidden={phase === "leaving"}
+      aria-hidden={isLeaving}
     >
-      <div className="page-loader__inner">
+      <div className="z-[1] flex translate-y-[-0.5rem] items-center justify-center">
         <div
-          className="page-loader__time"
+          className={[
+            "relative flex min-w-[5.3em] origin-[50%_55%] items-baseline justify-center whitespace-nowrap text-[30px] font-normal leading-none tracking-[-0.08em] text-white [perspective:600px] before:pointer-events-none before:absolute before:left-1/2 before:top-0 before:origin-[50%_55%] before:-translate-x-1/2 before:whitespace-nowrap before:text-[#ff6a00] before:opacity-0 before:mix-blend-screen before:content-[attr(data-text)] before:[font:inherit] before:[letter-spacing:inherit] before:[line-height:inherit] after:pointer-events-none after:absolute after:left-1/2 after:top-0 after:origin-[50%_55%] after:-translate-x-1/2 after:whitespace-nowrap after:text-[#00f5ff] after:opacity-0 after:mix-blend-screen after:content-[attr(data-text)] after:[font:inherit] after:[letter-spacing:inherit] after:[line-height:inherit]",
+            hour >= 8 && !isLeaving
+              ? "animate-[loader-text-map_1650ms_steps(1,end)_infinite] before:animate-[loader-text-chroma-a_1650ms_steps(1,end)_infinite] after:animate-[loader-text-chroma-b_1650ms_steps(1,end)_infinite]"
+              : "",
+            hour >= 8 && isLeaving
+              ? "animate-[loader-text-map_720ms_steps(1,end)_infinite] before:animate-[loader-text-chroma-a_720ms_steps(1,end)_infinite] after:animate-[loader-text-chroma-b_720ms_steps(1,end)_infinite]"
+              : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
           data-text={loaderText}
           aria-live="polite"
         >
-          <span className="page-loader__label">after</span>
-          <span key={hour} className="page-loader__hour">
+          <span className="mr-[0.18em] text-[1em] font-normal leading-none tracking-[-0.08em] text-white">
+            after
+          </span>
+          <span
+            key={hour}
+            className="inline-block min-w-[1.1em] origin-[50%_55%] animate-[loader-flip_500ms_cubic-bezier(0.22,1,0.36,1)] text-right will-change-[transform,opacity]"
+          >
             {hour}
           </span>
-          <span className="page-loader__suffix">:am</span>
+          <span className="ml-[0.04em] inline-block">:am</span>
         </div>
       </div>
     </div>
