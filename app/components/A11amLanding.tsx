@@ -162,7 +162,7 @@ export default function A11amLanding() {
         gsap.set(incubatorWords, {
           autoAlpha: 0,
           y: 30,
-          x: 30,
+          x: 0,
           filter: "blur(8px)",
         });
 
