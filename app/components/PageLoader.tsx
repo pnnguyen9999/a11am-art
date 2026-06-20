@@ -7,8 +7,8 @@ type PageLoaderProps = {
 };
 
 const HOURS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11] as const;
-const MIN_VISIBLE_MS = 600;
-const HOLD_AT_DONE_MS = 500;
+const MIN_VISIBLE_MS = 1600;
+const HOLD_AT_DONE_MS = 1500;
 const EXIT_MS = 520;
 const STEP_MS = MIN_VISIBLE_MS / (HOURS.length - 1);
 
