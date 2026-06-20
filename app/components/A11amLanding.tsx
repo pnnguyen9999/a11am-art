@@ -337,9 +337,10 @@ export default function A11amLanding() {
             float burst = 0.35 + smoothstep(0.08, 0.9, uScroll) * (0.34 + uFlash * 1.25);
             float blockShift = floor(noise(vec2(floor(uv.y * 18.0), floor(uTime * 8.0))) * 3.0) - 1.0;
             vec2 glitchUv = uv;
-            glitchUv.x += blockShift * (0.018 + uFlash * 0.075);
-            glitchUv.x += sin(uv.y * 38.0 + uTime * 1.0) * (0.004 + uFlash * 0.016);
-            glitchUv.y += vWave * 0.08;
+            // glitch set cao + uflash hon
+            glitchUv.x += blockShift * (0.0 + uFlash * 0.0);
+            glitchUv.x += sin(uv.y * 110.0 + uTime * 1.0) * (0.004 + uFlash * 0.016);
+            glitchUv.y += vWave * 2.08;
 
             float fragments = 0.0;
             fragments += shard(glitchUv, vec2(-0.58, 0.42), -0.5, vec2(0.42, 0.118), uTime * 0.42);
@@ -348,7 +349,7 @@ export default function A11amLanding() {
             // fragments += shard(glitchUv, vec2(0.72, -0.5), 0.46, vec2(0.34, 0.016), -uTime * 0.5);
             // fragments += shard(glitchUv, vec2(-0.48, -0.72), 0.08, vec2(0.5, 0.01), uTime * 0.32);
 
-            float hairline = smoothstep(0.65, 1.0, noise(glitchUv * vec2(42.0, 8.0) + uTime * 0.7));
+            float hairline = smoothstep(10.65, 1.0, noise(glitchUv * vec2(42.0, 8.0) + uTime * 0.7));
             hairline *= smoothstep(0.06, 0.0, abs(sin(glitchUv.y * 34.0 + uTime)));
             float bands = 0.0;
             // bands += glitchBand(glitchUv, 0.58 + sin(uTime * 0.1) * 0.08, 0.055, uTime * 0.9);
@@ -380,7 +381,7 @@ export default function A11amLanding() {
     scene.add(plane);
 
     const ringGroup = new THREE.Group();
-    scene.add(ringGroup);
+    // scene.add(ringGroup);
 
     const ringMaterials = [
       new THREE.LineBasicMaterial({
@@ -563,7 +564,7 @@ export default function A11amLanding() {
 
       <section
         id="top"
-        className="relative mx-auto flex min-h-[100svh] max-w-[90vw] 5xl:max-w-[1500px] flex-col justify-end px-[1.1rem] pb-[clamp(3.6rem,8vh,7rem)] pt-28 md:grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.32fr)] md:items-end md:px-[clamp(1.1rem,4vw,4.5rem)]"
+        className="relative mx-auto flex min-h-[100svh] max-w-[90vw] 5xl:max-w-[1500px] flex-col justify-end px-[5px] pb-[clamp(3.6rem,8vh,7rem)] pt-28 md:grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.32fr)] md:items-end md:px-[clamp(1.1rem,4vw,4.5rem)]"
         aria-labelledby="hero-title"
       >
         <div className="max-w-[72rem]">
@@ -597,7 +598,7 @@ export default function A11amLanding() {
 
       <section
         id="incubator"
-        className="relative mx-auto block min-h-[118svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] py-20 md:grid md:grid-cols-[minmax(8rem,0.4fr)_minmax(0,0.8fr)] md:items-start md:gap-[clamp(2rem,6vw,7rem)] md:px-[clamp(1.1rem,4vw,4.5rem)] md:pt-[24vh]"
+        className="relative mx-auto block min-h-[118svh] max-w-[90vw] 5xl:max-w-[1500px] px-[5px] py-20 md:grid md:grid-cols-[minmax(8rem,0.4fr)_minmax(0,0.8fr)] md:items-start md:gap-[clamp(2rem,6vw,7rem)] md:px-[clamp(1.1rem,4vw,4.5rem)] md:pt-[24vh]"
         aria-labelledby="incubator-title"
         data-incubator-section
       >
@@ -649,7 +650,7 @@ export default function A11amLanding() {
 
       <section
         id="talents"
-        className="relative mx-auto min-h-[130svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] pb-[16vh] pt-[16vh] md:px-[clamp(1.1rem,4vw,4.5rem)]"
+        className="relative mx-auto min-h-[130svh] max-w-[90vw] 5xl:max-w-[1500px] px-[5px] pb-[16vh] pt-[16vh] md:px-[clamp(1.1rem,4vw,4.5rem)]"
         aria-labelledby="talents-title"
       >
         <div className="mb-[clamp(2rem,7vw,6.5rem)] block md:flex md:items-end md:justify-between md:gap-8">
@@ -696,10 +697,10 @@ export default function A11amLanding() {
       </section>
 
       <section
-        className="relative mx-auto block min-h-[72svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] pb-8 pt-[15vh] md:flex md:items-end md:justify-between md:px-[clamp(1.1rem,4vw,4.5rem)] md:pb-[clamp(2rem,6vw,5rem)] md:pt-0"
+        className="relative mx-auto block min-h-[72svh] max-w-[90vw] 5xl:max-w-[1500px] px-[5px] pb-8 pt-[15vh] md:flex md:items-end md:justify-between md:px-[clamp(1.1rem,4vw,4.5rem)] md:pb-[clamp(2rem,6vw,5rem)] md:pt-0"
         aria-label="Closing statement"
       >
-        <p className="m-0 max-w-[58rem] text-[clamp(2.4rem,9vw,9rem)] font-[920] leading-[0.9] text-white">
+        <p className="m-0 max-w-[58rem] text-[clamp(2.4rem,9vw,9rem)] font-[920] leading-[0.9] text-white/90 mix-blend-difference">
           after 11:am, the sound gets stranger.
         </p>
         <div className="mt-8 flex flex-col items-start gap-[0.85rem] md:mb-[0.6rem] md:mt-0 md:items-end">
