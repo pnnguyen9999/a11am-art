@@ -161,7 +161,8 @@ export default function A11amLanding() {
       if (incubatorSection && incubatorWords.length > 0) {
         gsap.set(incubatorWords, {
           autoAlpha: 0,
-          y: 22,
+          y: 30,
+          x: 30,
           filter: "blur(8px)",
         });
 
@@ -172,7 +173,7 @@ export default function A11amLanding() {
             },
             scrollTrigger: {
               trigger: incubatorSection,
-              start: "top top",
+              start: () => (window.innerWidth < 1200 ? "top 8%" : "top top"),
               end: () =>
                 `+=${Math.max(window.innerHeight * 1.25, incubatorWords.length * 170)}`,
               scrub: 0.65,
@@ -186,8 +187,9 @@ export default function A11amLanding() {
             {
               autoAlpha: 1,
               y: 0,
+              x: 0,
               filter: "blur(0px)",
-              duration: 0.7,
+              duration: 0.5,
               stagger: 0.18,
             },
             0,
@@ -561,7 +563,7 @@ export default function A11amLanding() {
 
       <section
         id="top"
-        className="relative mx-auto flex min-h-[100svh] max-w-screen 5xl:max-w-[1500px] flex-col justify-end px-[1.1rem] pb-[clamp(3.6rem,8vh,7rem)] pt-28 md:grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.32fr)] md:items-end md:px-[clamp(1.1rem,4vw,4.5rem)]"
+        className="relative mx-auto flex min-h-[100svh] max-w-[90vw] 5xl:max-w-[1500px] flex-col justify-end px-[1.1rem] pb-[clamp(3.6rem,8vh,7rem)] pt-28 md:grid md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.32fr)] md:items-end md:px-[clamp(1.1rem,4vw,4.5rem)]"
         aria-labelledby="hero-title"
       >
         <div className="max-w-[72rem]">
@@ -595,7 +597,7 @@ export default function A11amLanding() {
 
       <section
         id="incubator"
-        className="relative mx-auto block min-h-[118svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] py-20 md:grid md:grid-cols-[minmax(8rem,0.4fr)_minmax(0,0.8fr)] md:items-start md:gap-[clamp(2rem,6vw,7rem)] md:px-[clamp(1.1rem,4vw,4.5rem)] md:pt-[24vh]"
+        className="relative mx-auto block min-h-[118svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] py-20 md:grid md:grid-cols-[minmax(8rem,0.4fr)_minmax(0,0.8fr)] md:items-start md:gap-[clamp(2rem,6vw,7rem)] md:px-[clamp(1.1rem,4vw,4.5rem)] md:pt-[24vh]"
         aria-labelledby="incubator-title"
         data-incubator-section
       >
@@ -605,19 +607,19 @@ export default function A11amLanding() {
               after eleven:am
             </span>
           </div>
-          <div className="max-w-[600px]">
+          {/* <div className="max-w-[600px]">
             <p className="mb-0 mt-8 text-[clamp(1rem,1.7vw,1.35rem)] leading-[1.6] text-[rgba(245,241,232,0.78)]">
               A11:am supports young creative talent through concept development,
               portfolio direction, online exhibitions, and public-facing
               releases. The work sits between art, sound, image, and internet
               culture.
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="flex flex-col justify-end items-end mt-10 md:mt-0">
           <h2
             id="incubator-title"
-            className="m-0 mt-[-20px] w-full md:text-right text-[clamp(3.25rem,10vw,6.25rem)] font-black leading-[1.2] text-[#f5f1e8] md:text-[84px]"
+            className="m-0 mt-[-20px] w-full text-[clamp(3.25rem,10vw,6.25rem)] font-black leading-[1.08] text-[#f5f1e8] md:text-right md:text-[clamp(4rem,6vw,6.25rem)] md:max-w-[50vw]"
           >
             {[
               "We",
@@ -647,7 +649,7 @@ export default function A11amLanding() {
 
       <section
         id="talents"
-        className="relative mx-auto min-h-[130svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] pb-[16vh] pt-[16vh] md:px-[clamp(1.1rem,4vw,4.5rem)]"
+        className="relative mx-auto min-h-[130svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] pb-[16vh] pt-[16vh] md:px-[clamp(1.1rem,4vw,4.5rem)]"
         aria-labelledby="talents-title"
       >
         <div className="mb-[clamp(2rem,7vw,6.5rem)] block md:flex md:items-end md:justify-between md:gap-8">
@@ -694,7 +696,7 @@ export default function A11amLanding() {
       </section>
 
       <section
-        className="relative mx-auto block min-h-[72svh] max-w-screen 5xl:max-w-[1500px] px-[1.1rem] pb-8 pt-[15vh] md:flex md:items-end md:justify-between md:px-[clamp(1.1rem,4vw,4.5rem)] md:pb-[clamp(2rem,6vw,5rem)] md:pt-0"
+        className="relative mx-auto block min-h-[72svh] max-w-[90vw] 5xl:max-w-[1500px] px-[1.1rem] pb-8 pt-[15vh] md:flex md:items-end md:justify-between md:px-[clamp(1.1rem,4vw,4.5rem)] md:pb-[clamp(2rem,6vw,5rem)] md:pt-0"
         aria-label="Closing statement"
       >
         <p className="m-0 max-w-[58rem] text-[clamp(2.4rem,9vw,9rem)] font-[920] leading-[0.9] text-white">
