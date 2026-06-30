@@ -11,18 +11,17 @@ gsap.registerPlugin(ScrollTrigger);
 const TALENTS = [
   {
     name: "NaSofia",
-    role: "Visual poet / image director",
+    role: "Singer - Songwriter • Visual Poet",
     img: "/img/na-s.jpg",
-    statement:
-      "Builds fragile, high-contrast worlds where beauty feels half remembered and half intercepted.",
+    statement: "Where poetry becomes light, and light becomes sound.",
     index: "01",
   },
   {
     name: "Toanlelet",
-    role: "Motion artist / spatial storyteller",
+    role: "Singer - Songwriter • DJ",
     img: "/img/toanlelet.jpg",
     statement:
-      "Turns rhythm, glitches, and negative space into frames that keep moving after the cut.",
+      "Surfing unseen frequencies between memory, motion, and starlight.",
     index: "02",
   },
 ];
